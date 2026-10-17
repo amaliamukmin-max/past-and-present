@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Time Travel Passport</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Rubik:wght@400;500;600;700;800&display=swap">
+<style>
+/* Look: comic-sticker / travel passport. Thick ink outlines, hard offset shadows, bright flat colours.
+   THEN (past) = orange, NOW (present) = blue, everywhere. Single deliberate light look. */
+:root{
+  --ink:#16131f; --paper:#ffffff; --bg:#eaf4ff;
+  --then:#ff7a1a; --then-soft:#ffe3cc;
+  --now:#2f7bff; --now-soft:#d9e7ff;
+  --pink:#ff4fa3; --yellow:#ffd23f; --mint:#22c99a; --violet:#8b5cf6;
+  --good:#12a150; --good-soft:#d6f5e3; --bad:#e5383b; --bad-soft:#ffdedf;
+  --muted:#4d4a5c;
+  --f-display:"Lilita One","Arial Black",Impact,sans-serif;
+  --f-body:"Rubik",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --line:3px solid var(--ink); --shadow:5px 5px 0 var(--ink);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);background-image:radial-gradient(#c9dcf5 1.4px,transparent 1.4px);background-size:22px 22px;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:4px solid var(--pink);outline-offset:2px}
+.wrap{max-width:940px;margin:0 auto;padding-inline:16px;padding-block:0 60px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.05;letter-spacing:.01em;text-wrap:balance}
+.then{color:var(--then)} .now{color:var(--now)}
+.box{background:var(--paper);border:var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.icon{display:block;width:100%;height:auto}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:22px}
+.logo span{background:var(--yellow);border:var(--line);border-radius:10px;padding:2px 10px;box-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg)}
+.logo span{white-space:nowrap}
+@media (max-width:460px){.logo .full{display:none}.logo{font-size:20px}}
+.stamps-mini{white-space:nowrap;font-weight:800;font-size:14px;background:var(--paper);border:var(--line);border-radius:999px;padding:4px 12px;font-variant-numeric:tabular-nums}
+
+/* boarding-pass hero */
+.pass{display:grid;grid-template-columns:1fr auto 1fr;overflow:hidden}
+.pass .side{padding:20px 22px;display:grid;gap:6px;align-content:center}
+.pass .side.from{background:var(--then-soft)} .pass .side.to{background:var(--now-soft);text-align:right}
+.pass small{font-weight:800;letter-spacing:.12em;font-size:12px}
+.pass .city{font-family:var(--f-display);font-size:clamp(30px,6vw,48px)}
+.pass .ex{font-size:15px;font-weight:600}
+.pass .mid{display:grid;place-items:center;padding:12px;border-left:3px dashed var(--ink);border-right:3px dashed var(--ink);background:var(--yellow)}
+.pass .mid svg{width:74px;height:74px}
+.hero-line{margin-top:18px;display:grid;gap:8px}
+.hero-line h1{font-size:clamp(30px,5.6vw,50px)}
+.hero-line p{margin:0;max-width:62ch;font-size:17px;color:var(--muted)}
+@media (max-width:600px){.pass{grid-template-columns:1fr}.pass .side.to{text-align:left}.pass .mid{border:0;border-top:3px dashed var(--ink);border-bottom:3px dashed var(--ink)}}
+
+/* tickets cheat sheet */
+.tickets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.ticket{padding:16px 18px;display:grid;gap:6px;position:relative}
+.ticket.t{background:var(--then-soft)} .ticket.n{background:var(--now-soft)}
+.ticket h3{font-size:26px}
+.ticket .f{font-weight:800}
+.ticket ul{margin:0;padding-left:18px;font-size:15px}
+.clues{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.clues span{background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:1px 8px;font-size:13px;font-weight:700}
+.tip{margin-top:16px;padding:14px 16px;background:var(--yellow);font-size:15px}
+@media (max-width:640px){.tickets{grid-template-columns:1fr}}
+
+/* passport + games */
+.sec{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:34px;margin-bottom:14px}
+.sec h2{font-size:32px}
+.sec small{font-weight:600;color:var(--muted)}
+.games{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.games .game{grid-column:span 2}.games .game:nth-child(-n+2){grid-column:span 3}
+@media (max-width:820px){.games{grid-template-columns:1fr 1fr}.games .game,.games .game:nth-child(-n+2){grid-column:auto}.games .game:last-child{grid-column:1 / -1}}
+@media (max-width:460px){.games{grid-template-columns:1fr}.games .game:last-child{grid-column:auto}}
+.game{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:center;text-align:left;padding:14px;transition:transform .12s,box-shadow .12s;min-width:0}
+.game:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.game:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.game .gi{width:76px;height:76px;border:var(--line);border-radius:14px;display:grid;place-items:center;padding:6px}
+.game h3{font-size:21px}
+.game p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.game .st{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;border:2px solid var(--ink);border-radius:6px;padding:0 6px}
+.game .st.done{background:var(--good);color:#fff}
+@media (prefers-reduced-motion:reduce){.game{transition:none}.game:hover,.game:active{transform:none}}
+
+.passport{margin-top:18px;padding:16px 18px;display:grid;gap:10px;background:#1f2a5a;color:#fff}
+.passport h3{font-size:22px;color:var(--yellow)}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.slot{aspect-ratio:1;border:3px dashed rgba(255,255,255,.4);border-radius:12px;display:grid;place-items:center;font-size:12px;font-weight:700;text-align:center;padding:6px;color:rgba(255,255,255,.6)}
+.slot.on{border:3px solid #fff;background:var(--paper);color:var(--ink);transform:rotate(-4deg);padding:4px}
+.slot.on:nth-child(even){transform:rotate(3deg)}
+.slot.on svg{width:80%;height:auto}
+@media (max-width:460px){.slots{grid-template-columns:repeat(5,1fr);gap:6px}.slot{font-size:10px}}
+
+details.teach{margin-top:32px;padding:14px 18px}
+details.teach summary{font-weight:800;cursor:pointer}
+details.teach li,details.teach p{font-size:14px;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;font-size:13px}
+footer{margin-top:20px;font-size:13px;font-weight:600;color:var(--muted)}
+
+/* play screen */
+.back{background:var(--paper);border:var(--line);border-radius:10px;padding:6px 12px;font-weight:800;box-shadow:3px 3px 0 var(--ink)}
+.play-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:16px}
+.play-head h1{font-size:clamp(30px,6vw,46px)}
+.play-head p{margin:4px 0 0;font-weight:600;color:var(--muted)}
+.counter{font-family:var(--f-display);font-size:22px;background:var(--yellow);border:var(--line);border-radius:12px;padding:4px 12px;box-shadow:3px 3px 0 var(--ink);font-variant-numeric:tabular-nums}
+.stage{margin-top:18px;padding:20px}
+.qrow{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.qrow .qi{width:96px;height:96px}
+@media (max-width:480px){.qrow{grid-template-columns:64px 1fr}.qrow .qi{width:64px;height:64px}}
+.q{font-size:clamp(20px,4.2vw,27px);font-weight:700;line-height:1.4;margin:0}
+.q mark{background:var(--yellow);padding:0 4px;border-radius:4px}
+.base{font-weight:800;color:var(--violet)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.big{border:var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px;font-family:var(--f-display);font-size:28px;display:grid;gap:2px;justify-items:center}
+.big small{font-family:var(--f-body);font-size:13px;font-weight:700}
+.big.t{background:var(--then);color:#fff} .big.n{background:var(--now);color:#fff}
+.big:active:not(:disabled){transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.big:disabled{opacity:.35;cursor:default}
+.big.pick{opacity:1}
+
+.typebox{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.typebox input{flex:1 1 200px;min-width:0;font:inherit;font-size:22px;font-weight:700;border:var(--line);border-radius:12px;padding:10px 14px;box-shadow:inset 3px 3px 0 rgba(0,0,0,.08)}
+.btn{border:var(--line);background:var(--paper);border-radius:12px;padding:10px 18px;font-weight:800;box-shadow:3px 3px 0 var(--ink)}
+.btn.go{background:var(--mint)}
+.btn.pink{background:var(--pink);color:#fff}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+.answer{min-height:58px;margin-top:20px;border:3px dashed var(--ink);border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;background:#f7f9ff}
+.answer:empty::before{content:"Tap the words below in the right order";color:var(--muted);font-weight:600;align-self:center}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tile{border:var(--line);border-radius:10px;background:var(--paper);padding:6px 12px;font-weight:700;font-size:18px;box-shadow:3px 3px 0 var(--ink)}
+.tile:nth-child(4n+1){background:#fff1b8}.tile:nth-child(4n+2){background:#ffd9ec}.tile:nth-child(4n+3){background:#d4f7ea}.tile:nth-child(4n){background:#e2e6ff}
+.tile.used{visibility:hidden}
+.row-end{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+.fb{margin-top:18px;border:var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+.fb.good{background:var(--good-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .ic{width:40px;height:40px;border-radius:50%;border:var(--line);display:grid;place-items:center;font-weight:900;font-size:20px;color:#fff}
+.fb.good .ic{background:var(--good)} .fb.bad .ic{background:var(--bad)}
+.fb b{display:block;font-size:18px}
+.fb p{margin:2px 0 0}
+.wobble{animation:wobble .35s}
+@keyframes wobble{25%{transform:rotate(-1.5deg)}75%{transform:rotate(1.5deg)}}
+@media (prefers-reduced-motion:reduce){.wobble{animation:none}}
+
+/* memory */
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
+@media (max-width:520px){.mem{grid-template-columns:repeat(3,1fr)}.mc{aspect-ratio:3/4}}
+.mc{aspect-ratio:5/4;border:var(--line);border-radius:14px;box-shadow:3px 3px 0 var(--ink);font-family:var(--f-display);font-size:clamp(18px,4vw,26px);display:grid;place-items:center;padding:6px;text-align:center}
+.mc.down{background:repeating-linear-gradient(45deg,var(--pink) 0 10px,#ff79b9 10px 20px);color:transparent}
+.mc.v1{background:var(--now-soft)} .mc.v2{background:var(--then-soft)}
+.mc.done{background:var(--good-soft);border-color:var(--good);opacity:.85}
+.mc small{display:block;font-family:var(--f-body);font-size:11px;font-weight:700;color:var(--muted)}
+.memtip{font-weight:600;color:var(--muted);margin:0 0 10px}
+
+/* story */
+.story{font-size:clamp(17px,3.4vw,20px);line-height:2.05;margin:14px 0 0}
+.tok{border:0;background:none;padding:1px 0;margin:0;border-radius:6px;font-size:inherit;line-height:inherit}
+.tok:hover{background:#fff1b8}
+.tok.fixed{background:var(--good-soft);color:var(--good);font-weight:800;padding:1px 4px;cursor:default;border:2px solid var(--good)}
+.tok.active{background:var(--bad-soft);color:var(--bad);font-weight:800;padding:1px 4px;border:2px solid var(--bad)}
+.fixbox{margin-top:14px;border:3px dashed var(--bad);border-radius:14px;padding:12px 14px}
+.fixbox p{margin:0 0 10px;font-weight:700}
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.found{font-weight:800;margin-top:8px}
+
+/* result */
+.result{text-align:center;padding:26px 16px;display:grid;gap:10px;justify-items:center}
+.result .stampbig{width:140px;transform:rotate(-8deg)}
+.result .pct{font-family:var(--f-display);font-size:64px;line-height:1}
+.result p{margin:0;max-width:48ch;color:var(--muted);font-weight:600}
+.review{text-align:left;display:grid;gap:8px;width:100%;margin-top:6px}
+.review div{border-left:5px solid var(--bad);background:#fff6f6;border-radius:8px;padding:8px 12px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><span>THEN &amp; NOW</span><b class="full" style="font-weight:400">Time Travel Passport</b></div>
+    <div class="stamps-mini" id="mini">0 / 5 stamps</div>
+  </div>
+
+  <!-- HOME -->
+  <main id="home">
+    <section class="pass box">
+      <div class="side from"><small>FROM</small><div class="city then">THEN</div><div class="ex">past tense · Borobudur <u>was built</u> long ago.</div></div>
+      <div class="mid" aria-hidden="true"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="#fff" stroke="#16131f" stroke-width="4"/><path d="M40 16 V40 L56 50" stroke="#16131f" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M12 40 a28 28 0 0 1 8 -20" stroke="#ff7a1a" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M68 40 a28 28 0 0 1 -8 20" stroke="#2f7bff" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="side to"><small>TO</small><div class="city now">NOW</div><div class="ex">present tense · Tourists <u>visit</u> it every day.</div></div>
+    </section>
+    <div class="hero-line">
+      <h1>Travel through Indonesian culture. Collect 5 stamps!</h1>
+      <p>Is it a story from the past or something that happens now? Choose the right verb and travel between THEN and NOW. Play any game, in any order.</p>
+    </div>
+
+    <div class="tickets">
+      <div class="ticket t box">
+        <h3 class="then">THEN · Past tense</h3>
+        <div class="f">Subject + V2 (past verb)</div>
+        <ul>
+          <li>Regular verbs: add <b>-ed</b> (cook → cooked)</li>
+          <li>Irregular verbs change (go → went, eat → ate)</li>
+          <li>Same form for all subjects: I / she / they <b>went</b></li>
+        </ul>
+        <div class="clues"><span>yesterday</span><span>last year</span><span>ago</span><span>in 1945</span><span>long ago</span></div>
+      </div>
+      <div class="ticket n box">
+        <h3 class="now">NOW · Present tense</h3>
+        <div class="f">Subject + V1 (+ s/es for he, she, it)</div>
+        <ul>
+          <li>Habits, traditions, and facts that are true today</li>
+          <li>He / she / it: add <b>-s</b> or <b>-es</b> (she cooks)</li>
+          <li>I / you / we / they: no -s (they cook)</li>
+        </ul>
+        <div class="clues"><span>every day</span><span>usually</span><span>always</span><span>today</span><span>still</span></div>
+      </div>
+    </div>
+    <div class="tip box"><b>Tip for Indonesian learners:</b> In Bahasa Indonesia the verb never changes ("Saya makan kemarin" and "Saya makan setiap hari"). In English, the verb changes: <i>I <b class="then">ate</b> yesterday</i>, but <i>I <b class="now">eat</b> every day</i>. Look for the time clue first!</div>
+
+    <div class="sec"><h2>Pick a game</h2><small>Score 70% or more to get a stamp</small></div>
+    <div class="games" id="games"></div>
+
+    <div class="passport box">
+      <h3>My Passport</h3>
+      <div class="slots" id="slots"></div>
+    </div>
+
+    <details class="teach box">
+      <summary>For teachers: theory and settings</summary>
+      <ul>
+        <li><b>L1 transfer and interlanguage (Lado, 1957; Selinker, 1972).</b> Bahasa Indonesia does not mark tense on the verb, so learners often drop -ed and -s. The tip box and the feedback point this out.</li>
+        <li><b>Morpheme order studies (Dulay &amp; Burt, 1974; Krashen, 1982).</b> Irregular past forms and third-person -s are acquired late, so they appear in every game.</li>
+        <li><b>Input enhancement (Sharwood Smith, 1993) and noticing (Schmidt, 1990).</b> Time clues are highlighted after each answer.</li>
+        <li><b>Focus on form (Long, 1991).</b> Grammar is practised inside meaningful sentences and stories about Indonesian culture.</li>
+        <li><b>Variety of practice.</b> Recognition (Then or Now?), production (Type the Verb), syntax (Build the Sentence), vocabulary recall (Verb Memory), and error correction (Story Fixer).</li>
+      </ul>
+      <button class="linkbtn" id="reset-ask">Clear all scores on this device</button>
+      <div id="reset-confirm" hidden style="margin-top:8px;font-size:14px">Are you sure? <button class="btn" id="reset-yes">Yes, clear</button> <button class="btn" id="reset-no">Cancel</button></div>
+    </details>
+    <footer id="credit"></footer>
+  </main>
+
+  <!-- PLAY -->
+  <main id="play" hidden>
+    <button class="back" id="back">← Back to passport</button>
+    <div class="play-head"><div><h1 id="g-title"></h1><p id="g-how"></p></div><div class="counter" id="g-count"></div></div>
+    <section class="stage box" id="stage"></section>
+  </main>
+</div>
+
+<script>
+/* =====================================================================
+   BAGIAN YANG BOLEH DIEDIT (editable section)
+   ---------------------------------------------------------------------
+   Semua soal ada di bagian ini. Untuk mengubah atau menambah soal:
+   - Salin satu baris soal yang sudah ada (dari tanda { sampai },).
+   - Ganti isinya, tetapi JANGAN hapus tanda kutip " " dan koma ,
+   - icon = gambar prangko. Pilihan: temple, ketupat, flag, ship, letter,
+     nyepi, coffee, food, fire, batik, angklung, house, lake, wayang
+   - Simpan file, lalu buka lagi di browser.
+   ===================================================================== */
+
+const MAKER = "Nama Mahasiswa · NIM";   // ganti dengan nama dan NIM pembuat
+
+/* GAME 1 · THEN OR NOW? (sort the sentence)
+   s = sentence, a = "past" atau "present", sig = time clue, why = explanation */
+const SORT = [
+  { icon:"temple", s:"Borobudur was built in the 9th century.", a:"past", sig:"in the 9th century", why:"The 9th century is long ago, so we use the past tense: was built." },
+  { icon:"temple", s:"Thousands of tourists visit Borobudur every year.", a:"present", sig:"every year", why:"\"Every year\" shows a habit that still happens: visit." },
+  { icon:"wayang", s:"Yesterday we watched a wayang show until midnight.", a:"past", sig:"Yesterday", why:"\"Yesterday\" means the action is finished: watch → watched." },
+  { icon:"batik", s:"Students wear batik to school every Friday.", a:"present", sig:"every Friday", why:"\"Every Friday\" is a routine: wear." },
+  { icon:"ketupat", s:"Last Lebaran, my family went home to Solo.", a:"past", sig:"Last Lebaran", why:"\"Last Lebaran\" is in the past. Go is irregular: go → went." },
+  { icon:"ketupat", s:"My grandmother usually cooks opor ayam for Lebaran.", a:"present", sig:"usually", why:"\"Usually\" shows a habit. She → cook + s = cooks." },
+  { icon:"ship", s:"Malin Kundang forgot his mother after he became rich.", a:"past", sig:"forgot", why:"A folk tale from long ago. Forgot is the past form of forget." },
+  { icon:"ship", s:"People in West Sumatra still tell the story of Malin Kundang.", a:"present", sig:"still", why:"\"Still\" means until now: tell." },
+  { icon:"flag", s:"In 1945, Soekarno read the Proclamation of Independence.", a:"past", sig:"In 1945", why:"1945 is in the past. Here read is pronounced /red/." },
+  { icon:"flag", s:"We raise the red and white flag on 17 August every year.", a:"present", sig:"every year", why:"The ceremony happens every year: raise." },
+  { icon:"letter", s:"Kartini wrote many letters about girls' education.", a:"past", sig:"wrote", why:"Kartini lived from 1879 to 1904. Wrote is the past form of write." },
+  { icon:"letter", s:"Indonesians celebrate Kartini Day on 21 April.", a:"present", sig:"on 21 April", why:"It happens every year on 21 April: celebrate." }
+];
+
+/* GAME 2 · TYPE THE VERB
+   s = sentence with ___, base = verb in brackets, a = correct answer to type */
+const TYPE = [
+  { icon:"food", s:"Yesterday, my father ___ rendang for the whole family.", base:"cook", a:"cooked", why:"\"Yesterday\" → past. Cook is regular: add -ed." },
+  { icon:"batik", s:"My mother ___ batik at Beringharjo Market every Sunday.", base:"buy", a:"buys", why:"\"Every Sunday\" → present. My mother = she, so add -s." },
+  { icon:"batik", s:"In 2009, UNESCO ___ Indonesian batik as world heritage.", base:"recognize", a:"recognized", why:"2009 is in the past: recognize + d." },
+  { icon:"fire", s:"Balinese dancers ___ the Kecak dance at Uluwatu every evening.", base:"perform", a:"perform", why:"A habit → present. Dancers = they, so NO -s." },
+  { icon:"ketupat", s:"Last year we ___ home to Yogyakarta by train.", base:"go", a:"went", why:"\"Last year\" → past. Go is irregular: went." },
+  { icon:"angklung", s:"My little brother ___ the angklung at school.", base:"play", a:"plays", why:"A habit → present. He → play + s." },
+  { icon:"ship", s:"In the legend, Sangkuriang ___ a huge boat in one night.", base:"build", a:"built", why:"A legend is about the past. Build is irregular: built." },
+  { icon:"house", s:"The Toraja people ___ tongkonan houses with boat-shaped roofs.", base:"build", a:"build", why:"A cultural fact that is still true → present. People = they, so no -s." },
+  { icon:"food", s:"Two days ago, I ___ pempek in Palembang.", base:"eat", a:"ate", why:"\"Two days ago\" → past. Eat is irregular: ate." },
+  { icon:"coffee", s:"Every morning, my grandfather ___ a cup of kopi tubruk.", base:"drink", a:"drinks", why:"A daily habit → present. He → drink + s." },
+  { icon:"lake", s:"Lake Toba ___ the largest volcanic lake in the world.", base:"be", a:"is", why:"A fact that is true today → present. It → is." },
+  { icon:"temple", s:"The Majapahit kingdom ___ very powerful in the 14th century.", base:"be", a:"was", why:"The 14th century is the past. It → was (not were)." },
+  { icon:"letter", s:"Our class ___ the Kartini Day parade last week.", base:"join", a:"joined", why:"\"Last week\" → past: join + ed." },
+  { icon:"nyepi", s:"On Nyepi Day, the people of Bali ___ at home in silence.", base:"stay", a:"stay", why:"A yearly tradition → present. People = they, so no -s." }
+];
+
+/* GAME 3 · BUILD THE SENTENCE
+   s = correct sentence, trap = one wrong verb tile mixed in, tense = "past"/"present", why = explanation */
+const BUILD = [
+  { icon:"house", s:"My family visited Tana Toraja last year.", trap:"visit", tense:"past", why:"\"Last year\" → past: visited." },
+  { icon:"batik", s:"Every Friday, students wear batik to school.", trap:"wore", tense:"present", why:"\"Every Friday\" → present: wear." },
+  { icon:"wayang", s:"The puppet master told a story all night.", trap:"tells", tense:"past", why:"A finished show → past: told (tell is irregular)." },
+  { icon:"ketupat", s:"My grandmother makes ketupat every Lebaran.", trap:"make", tense:"present", why:"\"Every Lebaran\" → present. She → makes." },
+  { icon:"flag", s:"Soekarno and Hatta proclaimed independence in 1945.", trap:"proclaim", tense:"past", why:"\"In 1945\" → past: proclaimed." },
+  { icon:"lake", s:"We took a boat across Lake Toba yesterday.", trap:"take", tense:"past", why:"\"Yesterday\" → past. Take is irregular: took." },
+  { icon:"nyepi", s:"Balinese people stay at home on Nyepi Day.", trap:"stays", tense:"present", why:"A tradition → present. People = they, so no -s." },
+  { icon:"ship", s:"Malin Kundang sailed away and forgot his mother.", trap:"forget", tense:"past", why:"A folk tale → past: sailed, forgot." }
+];
+
+/* GAME 4 · VERB MEMORY: irregular verb pairs (6 random pairs per game)
+   v1 = present, v2 = past, arti = Indonesian meaning, ex = example */
+const VERBS = [
+  { v1:"go", v2:"went", arti:"pergi", ex:"Last Lebaran, we went home to Solo." },
+  { v1:"eat", v2:"ate", arti:"makan", ex:"I ate gudeg in Yogyakarta yesterday." },
+  { v1:"build", v2:"built", arti:"membangun", ex:"The Sailendra kings built Borobudur." },
+  { v1:"write", v2:"wrote", arti:"menulis", ex:"Kartini wrote letters about education." },
+  { v1:"wear", v2:"wore", arti:"memakai", ex:"Javanese royals wore batik in the palace." },
+  { v1:"run", v2:"ran", arti:"berlari", ex:"Malin's mother ran to the beach." },
+  { v1:"throw", v2:"threw", arti:"melempar", ex:"Timun Mas threw the salt into the sea." },
+  { v1:"tell", v2:"told", arti:"bercerita", ex:"The dalang told a long story." },
+  { v1:"make", v2:"made", arti:"membuat", ex:"My aunt made ketupat for Lebaran." },
+  { v1:"see", v2:"saw", arti:"melihat", ex:"We saw the Kecak dance at sunset." },
+  { v1:"become", v2:"became", arti:"menjadi", ex:"Malin Kundang became a stone." },
+  { v1:"fight", v2:"fought", arti:"berjuang", ex:"Cut Nyak Dien fought for Aceh." }
+];
+
+/* GAME 5 · STORY FIXER
+   Tulis {0}, {1}, ... di tempat kata yang SALAH.
+   w = wrong word, fix = correct word, alt = distractor, why = explanation */
+const STORIES = [
+  { icon:"ship", title:"The Legend of Malin Kundang", note:"Folk tale · past",
+    text:"Long ago, a poor boy named Malin Kundang {0} with his mother on the coast of West Sumatra. One day, he {1} away on a big ship to find work. Many years later, he came back as a rich man. His old mother {2} to hug him, but Malin was ashamed. He said that she {3} not his mother. His mother prayed, and Malin turned into stone.",
+    errs:[
+      { w:"live", fix:"lived", alt:"lives", why:"The story happened \"long ago\": live → lived." },
+      { w:"sail", fix:"sailed", alt:"sails", why:"Still in the past of the story: sail → sailed." },
+      { w:"run", fix:"ran", alt:"runs", why:"Run is irregular. The past form is ran, not runned." },
+      { w:"is", fix:"was", alt:"were", why:"\"He said that...\" is in the past: is → was." } ] },
+  { icon:"ketupat", title:"Lebaran in My Family", note:"Habit · present",
+    text:"Every year, millions of Indonesians {0} home for Lebaran. My aunt {1} ketupat the night before. In the morning, we {2} new clothes and pray together at the mosque. After that, my family {3} our neighbours and asks for forgiveness.",
+    errs:[
+      { w:"goes", fix:"go", alt:"went", why:"Millions of Indonesians = they, so no -s: go." },
+      { w:"make", fix:"makes", alt:"made", why:"A yearly habit, and my aunt = she: makes." },
+      { w:"wore", fix:"wear", alt:"wears", why:"This is a habit, not a past story. We → wear." },
+      { w:"visit", fix:"visits", alt:"visited", why:"My family is one group (it), like \"asks\": visits." } ] },
+  { icon:"temple", title:"Borobudur: Then and Now", note:"Then and now",
+    text:"Borobudur {0} built more than 1,000 years ago. For many centuries, volcanic ash and forest {1} the temple. In 1814, Raffles {2} about it and sent a team to clear it. Today, the temple {3} visitors from all over the world.",
+    errs:[
+      { w:"is", fix:"was", alt:"were", why:"\"More than 1,000 years ago\" is the past: was built." },
+      { w:"cover", fix:"covered", alt:"covers", why:"This happened centuries ago: covered." },
+      { w:"hear", fix:"heard", alt:"hears", why:"1814 is the past. Hear is irregular: heard." },
+      { w:"welcomed", fix:"welcomes", alt:"welcome", why:"\"Today\" → present. The temple = it: welcomes." } ] }
+];
+/* ===================== AKHIR BAGIAN YANG BOLEH DIEDIT ===================== */
+
+
+/* ======================= ICONS (stamp drawings) ======================= */
+const O = 'stroke="#16131f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"';
+const wrapI = (bg, body) => `<svg class="icon" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="${bg}" ${O}/>${body}</svg>`;
+const ICONS = {
+  temple: () => wrapI("#ffd23f", `<rect x="20" y="66" width="60" height="12" fill="#c98a4b" ${O}/><rect x="28" y="54" width="44" height="12" fill="#d9a066" ${O}/><rect x="36" y="44" width="28" height="10" fill="#e8b67e" ${O}/><path d="M40 44 Q40 26 50 24 Q60 26 60 44 Z" fill="#f2c894" ${O}/><path d="M50 24 V14" ${O}/>`),
+  ketupat: () => wrapI("#22c99a", `<path d="M50 18 V30" ${O}/><path d="M50 30 L72 52 L50 74 L28 52 Z" fill="#b7e35a" ${O}/><path d="M39 41 L61 63 M61 41 L39 63" ${O}/><path d="M45 74 L40 86 M55 74 L60 86" ${O}/><path d="M74 20 a10 10 0 1 0 8 16 a8 8 0 1 1 -8 -16Z" fill="#fff3b0" ${O}/>`),
+  flag: () => wrapI("#8ed1ff", `<path d="M30 84 V18" ${O} stroke-width="4"/><path d="M30 20 Q48 14 62 22 Q72 28 80 22 V38 Q72 44 62 38 Q48 30 30 36 Z" fill="#ff3b3b" ${O}/><path d="M30 36 Q48 30 62 38 Q72 44 80 38 V54 Q72 60 62 54 Q48 46 30 52 Z" fill="#fff" ${O}/><rect x="22" y="80" width="18" height="6" fill="#bbb" ${O}/>`),
+  ship: () => wrapI("#ff9f6b", `<path d="M18 64 H82 Q78 78 66 80 H34 Q22 78 18 64 Z" fill="#8a4b22" ${O}/><path d="M48 64 V20" ${O}/><path d="M50 22 L74 60 H50 Z" fill="#fff" ${O}/><path d="M46 26 L26 60 H46 Z" fill="#fff6dc" ${O}/><path d="M14 86 Q26 80 38 86 Q50 92 62 86 Q74 80 86 86" fill="none" ${O}/>`),
+  letter: () => wrapI("#ff8fc8", `<rect x="18" y="32" width="56" height="40" rx="4" fill="#fff" ${O}/><path d="M18 34 L46 56 L74 34" fill="none" ${O}/><path d="M66 74 L86 26" ${O} stroke-width="4"/><path d="M84 30 L90 18 L80 24 Z" fill="#16131f"/>`),
+  nyepi: () => wrapI("#2b2a6b", `<path d="M66 22 a12 12 0 1 0 10 18 a10 10 0 1 1 -10 -18Z" fill="#fff3b0" ${O}/><circle cx="30" cy="26" r="2" fill="#fff"/><circle cx="44" cy="18" r="2" fill="#fff"/><circle cx="22" cy="44" r="2" fill="#fff"/><path d="M24 84 V60 L28 56 V48 L33 44 V36 L38 40 V84 Z M76 84 V60 L72 56 V48 L67 44 V36 L62 40 V84 Z" fill="#0d0b22" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>`),
+  coffee: () => wrapI("#ffcf99", `<path d="M26 44 H66 L62 76 Q46 82 30 76 Z" fill="#fff" ${O}/><path d="M66 50 Q80 50 78 62 Q76 72 62 70" fill="none" ${O}/><ellipse cx="46" cy="44" rx="20" ry="5" fill="#5a2e12" ${O}/><path d="M40 34 Q36 28 42 22 M52 34 Q48 28 54 22" fill="none" ${O}/>`),
+  food: () => wrapI("#ffe066", `<ellipse cx="50" cy="62" rx="34" ry="14" fill="#fff" ${O}/><path d="M32 60 Q36 38 50 40 Q62 38 64 60 Z" fill="#fffdf2" ${O}/><g fill="#6b2f12" ${O}><ellipse cx="66" cy="62" rx="8" ry="5"/><ellipse cx="56" cy="68" rx="7" ry="4"/></g><path d="M28 30 Q36 22 44 28" fill="none" stroke="#e5383b" stroke-width="6" stroke-linecap="round"/>`),
+  fire: () => wrapI("#ffb347", `<path d="M50 80 Q30 76 32 58 Q34 46 44 38 Q44 52 52 54 Q48 40 58 26 Q60 44 68 52 Q74 62 66 74 Q60 80 50 80 Z" fill="#ff5a1f" ${O}/><path d="M50 78 Q42 74 44 64 Q46 58 50 54 Q52 64 58 66 Q60 74 50 78 Z" fill="#ffd23f" ${O}/><path d="M26 84 L74 76 M30 76 L72 86" ${O} stroke-width="5"/>`),
+  batik: () => wrapI("#7ad3f0", `<rect x="22" y="22" width="56" height="56" rx="6" fill="#6b3a16" ${O}/>${[[36,36],[64,36],[36,64],[64,64]].map(([x,y]) => `<g fill="#f2c26b"><ellipse cx="${x}" cy="${y-7}" rx="4" ry="6"/><ellipse cx="${x}" cy="${y+7}" rx="4" ry="6"/><ellipse cx="${x-7}" cy="${y}" rx="6" ry="4"/><ellipse cx="${x+7}" cy="${y}" rx="6" ry="4"/></g>`).join("")}`),
+  angklung: () => wrapI("#b7f56a", `<rect x="24" y="70" width="52" height="8" rx="4" fill="#d9a85a" ${O}/><path d="M32 70 V34 L44 26 V70 Z M54 70 V46 L66 40 V70 Z" fill="#f0cf8a" ${O}/><path d="M22 20 V72 M78 20 V72 M22 20 H78 M22 50 H78" fill="none" ${O}/>`),
+  house: () => wrapI("#ff6b6b", `<path d="M14 34 Q50 58 86 34 L78 48 Q50 70 22 48 Z" fill="#2b211d" ${O}/><rect x="30" y="54" width="40" height="16" fill="#c0392b" ${O}/><path d="M30 62 L36 56 L42 62 L48 56 L54 62 L60 56 L66 62" fill="none" stroke="#fff" stroke-width="2"/><path d="M36 70 V84 M50 70 V84 M64 70 V84" ${O}/>`),
+  lake: () => wrapI("#9be7ff", `<path d="M12 56 L32 34 L46 48 L60 30 L88 56 Z" fill="#7bc47f" ${O}/><path d="M8 58 H92 Q90 82 50 88 Q10 82 8 58 Z" fill="#2f7bff" ${O}/><path d="M38 68 Q50 62 62 68 Q50 72 38 68 Z" fill="#7bc47f" ${O}/>`),
+  wayang: () => wrapI("#c7a6ff", `<path d="M50 16 C62 30 74 46 74 62 C74 74 66 80 50 80 C34 80 26 74 26 62 C26 46 38 30 50 16 Z" fill="#6b3a16" ${O}/><path d="M50 74 V32 M50 46 L40 40 M50 46 L60 40 M50 58 L38 52 M50 58 L62 52" stroke="#ffd23f" stroke-width="2.5" stroke-linecap="round"/><path d="M50 80 V92" ${O}/>`)
+};
+const icon = k => (ICONS[k] || ICONS.temple)();
+
+/* ======================= APP ENGINE (tidak perlu diubah) ======================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const KEY = "timetravel-passport-v1";
+let best = {};
+try { best = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(best)); } catch (e) {} };
+
+const GAMES = [
+  { id:"sort", name:"Then or Now?", how:"Read the sentence. Is it a story from the past or something true now?", icon:"temple", bg:"#ffd23f" },
+  { id:"type", name:"Type the Verb", how:"Type the correct form of the verb in brackets.", icon:"food", bg:"#ff8fc8" },
+  { id:"build", name:"Build the Sentence", how:"Tap the words in the right order. Careful: one word is a trap!", icon:"house", bg:"#8ed1ff" },
+  { id:"memory", name:"Verb Memory", how:"Flip two cards. Match each present verb with its past form.", icon:"ship", bg:"#b7f56a" },
+  { id:"fix", name:"Story Fixer", how:"Each story has 4 wrong verbs. Tap a wrong verb and fix it.", icon:"letter", bg:"#ffb347" }
+];
+const stamped = id => (best[id] || 0) >= 70;
+
+function show(v) { $("home").hidden = v !== "home"; $("play").hidden = v !== "play"; window.scrollTo(0, 0); }
+function renderHome() {
+  $("games").innerHTML = GAMES.map((g, i) => `<button class="game box" data-i="${i}">
+    <span class="gi" style="background:${g.bg}">${icon(g.icon)}</span>
+    <span><h3>${g.name}</h3><p>${g.how}</p>
+    <span class="st ${stamped(g.id) ? "done" : ""}">${stamped(g.id) ? "✓ Stamped · best " + best[g.id] + "%" : best[g.id] ? "Best " + best[g.id] + "% · need 70%" : "Not played yet"}</span></span></button>`).join("");
+  $("slots").innerHTML = GAMES.map(g => stamped(g.id) ? `<div class="slot on" title="${g.name}">${icon(g.icon)}</div>` : `<div class="slot">${g.name}</div>`).join("");
+  const n = GAMES.filter(g => stamped(g.id)).length;
+  $("mini").textContent = `${n} / 5 stamps`;
+  $("credit").textContent = "Made by: " + MAKER;
+}
+$("games").addEventListener("click", e => { const b = e.target.closest(".game"); if (b) start(+b.dataset.i); });
+$("back").onclick = () => { renderHome(); show("home"); };
+$("reset-ask").onclick = () => $("reset-confirm").hidden = false;
+$("reset-no").onclick = () => $("reset-confirm").hidden = true;
+$("reset-yes").onclick = () => { best = {}; save(); $("reset-confirm").hidden = true; renderHome(); };
+
+let G = null, items = [], idx = 0, right = 0, total = 0, notes = [];
+function start(i) {
+  G = GAMES[i]; idx = 0; right = 0; total = 0; notes = [];
+  $("g-title").textContent = G.name; $("g-how").textContent = G.how;
+  items = G.id === "sort" ? shuffle(SORT) : G.id === "type" ? shuffle(TYPE) : G.id === "build" ? shuffle(BUILD) : G.id === "fix" ? STORIES.slice() : [];
+  show("play");
+  if (G.id === "memory") return memory();
+  step();
+}
+function step() {
+  if (idx >= items.length) return finish();
+  $("g-count").textContent = `${idx + 1} / ${items.length}`;
+  ({ sort: () => sortQ(), type: () => typeQ(), build: () => buildQ(undefined, true), fix: () => fixQ() })[G.id]();
+}
+const fb = (ok, title, text) => `<div class="fb ${ok ? "good" : "bad wobble"}" role="alert"><span class="ic">${ok ? "✓" : "✗"}</span><div><b>${title}</b><p>${text}</p></div></div>`;
+const hl = (s, sig) => { const k = s.toLowerCase().indexOf((sig || "").toLowerCase()); return !sig || k < 0 ? esc(s) : esc(s.slice(0, k)) + "<mark>" + esc(s.slice(k, k + sig.length)) + "</mark>" + esc(s.slice(k + sig.length)); };
+const nextBtn = () => `<div class="row-end"><button class="btn go" id="next">${idx === items.length - 1 ? "See my result" : "Next →"}</button></div>`;
+function bindNext() { $("next").onclick = () => { idx++; step(); }; $("next").focus(); }
+function tally(ok, note) { total++; if (ok) right++; else if (note) notes.push(note); }
+
+/* ---- Game 1: Then or Now? ---- */
+function sortQ(pick) {
+  const it = items[idx], done = pick !== undefined;
+  let h = `<div class="qrow"><div class="qi">${icon(it.icon)}</div><p class="q">${done ? hl(it.s, it.sig) : esc(it.s)}</p></div>
+    <div class="two">
+      <button class="big t ${done && it.a === "past" ? "pick" : ""}" data-a="past" ${done ? "disabled" : ""}>THEN<small>past tense</small></button>
+      <button class="big n ${done && it.a === "present" ? "pick" : ""}" data-a="present" ${done ? "disabled" : ""}>NOW<small>present tense</small></button></div>`;
+  if (done) {
+    const ok = pick === it.a;
+    h += fb(ok, ok ? "Correct!" : `Not quite. This one is ${it.a === "past" ? "THEN (past)" : "NOW (present)"}.`, `Look at the clue <b>"${esc(it.sig)}"</b>. ${esc(it.why)}`) + nextBtn();
+  }
+  $("stage").innerHTML = h;
+  if (!done) $("stage").querySelectorAll(".big").forEach(b => b.onclick = () => { const ok = b.dataset.a === it.a; tally(ok, `${it.s} → ${it.a}. ${it.why}`); sortQ(b.dataset.a); });
+  else bindNext();
+}
+
+/* ---- Game 2: Type the Verb ---- */
+function typeQ(typed) {
+  const it = items[idx], done = typed !== undefined;
+  const [a, b] = it.s.split("___");
+  const blank = done ? `<mark>${esc(it.a)}</mark>` : `____ <span class="base">(${esc(it.base)})</span>`;
+  let h = `<div class="qrow"><div class="qi">${icon(it.icon)}</div><p class="q">${esc(a)}${blank}${esc(b || "")}</p></div>`;
+  if (!done) {
+    h += `<form class="typebox" id="tform" autocomplete="off"><input id="tin" aria-label="Your answer" placeholder="Type the verb here" autocapitalize="off" spellcheck="false"><button class="btn go">Check</button><button type="button" class="btn" id="hint">Hint</button></form><p id="hintline" style="font-weight:600;color:var(--muted)"></p>`;
+  } else {
+    const ok = typed.trim().toLowerCase() === it.a.toLowerCase();
+    let extra = "";
+    if (!ok && typed.trim().toLowerCase() === it.base) extra = "You typed the base form. Check the time clue and the subject. ";
+    h += fb(ok, ok ? "Correct!" : `Not quite. The answer is "${it.a}".`, (ok ? "" : `You typed "${esc(typed.trim() || "(nothing)")}". `) + extra + esc(it.why)) + nextBtn();
+  }
+  $("stage").innerHTML = h;
+  if (!done) {
+    $("tin").focus();
+    $("tform").onsubmit = e => { e.preventDefault(); const v = $("tin").value; if (!v.trim()) { $("tin").focus(); return; } const ok = v.trim().toLowerCase() === it.a.toLowerCase(); tally(ok, `${it.s.replace("___", it.a)} (${it.base} → ${it.a}). ${it.why}`); typeQ(v); };
+    $("hint").onclick = () => { $("hintline").textContent = `Hint: it starts with "${it.a[0]}" and has ${it.a.length} letters.`; $("tin").focus(); };
+  } else bindNext();
+}
+
+/* ---- Game 3: Build the Sentence ---- */
+let picked = [], pool = [];
+function buildQ(checked, fresh) {
+  const it = items[idx];
+  if (fresh) { pool = shuffle(it.s.split(" ").concat(it.trap)); picked = []; }
+  const ans = picked.map(i => pool[i]).join(" ");
+  let h = `<div class="qrow"><div class="qi">${icon(it.icon)}</div><p class="q">Make a <span class="${it.tense === "past" ? "then" : "now"}">${it.tense === "past" ? "THEN (past)" : "NOW (present)"}</span> sentence.</p></div>
+    <div class="answer" id="ans">${picked.map((i, k) => `<button class="tile" data-k="${k}" ${checked !== undefined ? "disabled" : ""}>${esc(pool[i])}</button>`).join("")}</div>
+    <div class="tiles">${pool.map((w, i) => `<button class="tile ${picked.includes(i) ? "used" : ""}" data-i="${i}" ${checked !== undefined ? "disabled" : ""}>${esc(w)}</button>`).join("")}</div>`;
+  if (checked === undefined) h += `<div class="row-end"><button class="btn" id="clear">Clear</button><button class="btn go" id="check" ${picked.length ? "" : "disabled"}>Check</button></div>`;
+  else {
+    const ok = checked;
+    h += fb(ok, ok ? "Correct!" : "Not quite.", (ok ? "" : `The right sentence is: <b>${esc(it.s)}</b> `) + `The trap word was "${esc(it.trap)}". ${esc(it.why)}`) + nextBtn();
+  }
+  $("stage").innerHTML = h;
+  if (checked === undefined) {
+    $("stage").querySelectorAll(".tiles .tile").forEach(b => b.onclick = () => { picked.push(+b.dataset.i); buildQ(); });
+    $("stage").querySelectorAll("#ans .tile").forEach(b => b.onclick = () => { picked.splice(+b.dataset.k, 1); buildQ(); });
+    $("clear").onclick = () => { picked = []; buildQ(); };
+    $("check").onclick = () => { const ok = ans === it.s; tally(ok, `${it.s} (trap: ${it.trap}). ${it.why}`); buildQ(ok); };
+  } else bindNext();
+}
+
+/* ---- Game 4: Verb Memory ---- */
+let mem = null;
+function memory() {
+  const pairs = shuffle(VERBS).slice(0, 6);
+  const cards = shuffle(pairs.flatMap((v, p) => [{ p, t: v.v1, k: "v1", arti: v.arti }, { p, t: v.v2, k: "v2", arti: v.arti }]));
+  mem = { cards, open: [], done: new Set(), flips: 0, lock: false, msg: "" };
+  drawMem();
+}
+function drawMem() {
+  const m = mem;
+  $("g-count").textContent = `${m.done.size} / 6 pairs`;
+  let h = `<p class="memtip">Blue = present (NOW), orange = past (THEN). Moves: ${m.flips}</p><div class="mem">` + m.cards.map((c, i) => {
+    const up = m.open.includes(i) || m.done.has(c.p);
+    return `<button class="mc ${!up ? "down" : m.done.has(c.p) ? "done" : c.k}" data-i="${i}" ${up ? "disabled" : ""} aria-label="${up ? esc(c.t) : "Hidden card"}">${up ? `<span>${esc(c.t)}<small>${c.k === "v1" ? "now" : "then"} · ${esc(c.arti)}</small></span>` : "?"}</button>`;
+  }).join("") + `</div>` + (m.msg || "");
+  if (m.done.size === 6) {
+    const score = Math.max(0, Math.min(100, Math.round(100 - (m.flips - 6) * 5)));
+    right = score; total = 100;
+    h += `<div class="row-end"><button class="btn go" id="next">See my result</button></div>`;
+    $("stage").innerHTML = h;
+    $("next").onclick = () => finish(score, "Fewer moves give a higher score. A perfect game is 6 moves.");
+    return;
+  }
+  $("stage").innerHTML = h;
+  $("stage").querySelectorAll(".mc").forEach(b => b.onclick = () => {
+    if (m.lock) return;
+    const i = +b.dataset.i; m.open.push(i);
+    if (m.open.length === 2) {
+      m.flips++;
+      const [x, y] = m.open.map(k => m.cards[k]);
+      if (x.p === y.p && x.k !== y.k) { m.done.add(x.p); const v1 = x.k === "v1" ? x.t : y.t, v2 = x.k === "v2" ? x.t : y.t; m.msg = fb(true, `Match! ${v1} → ${v2}`, `"${esc(v1)}" (${esc(x.arti)}) becomes "${esc(v2)}" in the past.`); m.open = []; drawMem(); }
+      else { m.msg = fb(false, "Not a pair.", "Remember where these cards are and try again."); m.lock = true; drawMem(); setTimeout(() => { m.open = []; m.lock = false; drawMem(); }, 1100); }
+    } else drawMem();
+  });
+}
+
+/* ---- Game 5: Story Fixer ---- */
+let fx = null;
+function fixQ() {
+  const st = items[idx];
+  if (!fx || fx.st !== st) fx = { st, fixed: {}, tried: {}, active: null, opts: null, msg: "" };
+  const parts = st.text.split(/(\s+)/);
+  const body = parts.map((t, k) => {
+    if (/^\s+$/.test(t)) return t;
+    const m = t.match(/^(.*?)\{(\d)\}(.*)$/);
+    if (m) {
+      const e = +m[2], er = st.errs[e];
+      if (fx.fixed[e]) return `${esc(m[1])}<span class="tok fixed">${esc(er.fix)}</span>${esc(m[3])}`;
+      return `${esc(m[1])}<button class="tok ${fx.active === e ? "active" : ""}" data-e="${e}">${esc(er.w)}</button>${esc(m[3])}`;
+    }
+    const w = t.match(/^([^A-Za-z']*)([A-Za-z'’-]+)(.*)$/);
+    return w ? `${esc(w[1])}<button class="tok" data-k="${k}">${esc(w[2])}</button>${esc(w[3])}` : esc(t);
+  }).join("");
+  const n = Object.keys(fx.fixed).length;
+  let h = `<div class="qrow"><div class="qi">${icon(st.icon)}</div><div><h3 style="font-size:26px">${esc(st.title)}</h3><b style="color:var(--muted)">${esc(st.note)}</b></div></div>
+    <p class="story">${body}</p><div class="found">Fixed: ${n} / ${st.errs.length}</div>`;
+  if (fx.active !== null) {
+    const er = st.errs[fx.active]; fx.opts = fx.opts || shuffle([er.fix, er.alt, er.w]);
+    h += `<div class="fixbox"><p>"${esc(er.w)}" is wrong. Change it to:</p><div class="opts">${fx.opts.map(o => `<button class="btn" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>`;
+  }
+  h += fx.msg;
+  if (n === st.errs.length) h += nextBtn();
+  $("stage").innerHTML = h;
+  $("stage").querySelectorAll(".tok[data-k]").forEach(b => b.onclick = () => { fx.active = null; fx.opts = null; fx.msg = fb(false, `"${b.textContent}" is already correct.`, "Look for a verb that does not match the time of the story or its subject."); fixQ(); });
+  $("stage").querySelectorAll(".tok[data-e]").forEach(b => b.onclick = () => { fx.active = +b.dataset.e; fx.opts = null; fx.msg = fb(true, "You found a mistake!", "Now choose the correct verb."); fixQ(); });
+  $("stage").querySelectorAll(".fixbox .btn").forEach(b => b.onclick = () => {
+    const e = fx.active, er = st.errs[e], ok = b.dataset.o === er.fix;
+    if (!(e in fx.tried)) { fx.tried[e] = ok; tally(ok, `${st.title}: "${er.w}" → "${er.fix}". ${er.why}`); }
+    if (ok) { fx.fixed[e] = true; fx.active = null; fx.opts = null; fx.msg = fb(true, `Correct! "${er.w}" → "${er.fix}"`, esc(er.why)); }
+    else fx.msg = fb(false, `"${esc(b.dataset.o)}" is not right.`, esc(er.why) + " Try again.");
+    fixQ();
+  });
+  const nx = $("next"); if (nx) nx.onclick = () => { idx++; fx = null; step(); };
+}
+
+/* ---- result ---- */
+function finish(forced, note) {
+  const score = forced !== undefined ? forced : total ? Math.round(100 * right / total) : 0;
+  const had = stamped(G.id);
+  if (score > (best[G.id] || 0)) { best[G.id] = score; save(); }
+  const got = !had && stamped(G.id);
+  $("g-count").textContent = "Done!";
+  $("stage").innerHTML = `<div class="result">
+    ${score >= 70 ? `<div class="stampbig">${icon(G.icon)}</div>` : ""}
+    <div class="pct" style="color:${score >= 70 ? "var(--good)" : "var(--then)"}">${score}%</div>
+    <p>${forced !== undefined ? esc(note || "") : `${right} of ${total} correct on the first try.`} ${score >= 70 ? (got ? "New stamp for your passport!" : "Great job!") : "You need 70% for a stamp. Read the notes below and try again."}</p>
+    <div class="row-end" style="justify-content:center"><button class="btn" id="again">Play again</button><button class="btn pink" id="home2">Back to passport</button></div>
+    ${notes.length ? `<div class="review"><b>Remember:</b>${notes.map(n => `<div>${esc(n)}</div>`).join("")}</div>` : ""}</div>`;
+  $("again").onclick = () => start(GAMES.indexOf(G));
+  $("home2").onclick = () => { renderHome(); show("home"); };
+}
+renderHome();
+</script>
+</body>
+</html>
